@@ -1,0 +1,32 @@
+{
+  "products": [
+    {
+      "sku": "123",
+      "name": "Product 1",
+      "price": 100,
+      "category": "Electronics",
+      "id": "cfb2"
+    },
+    {
+      "sku": "456",
+      "name": "Product 2",
+      "price": 200,
+      "category": "Books",
+      "id": "541c"
+    },
+    {
+      "sku": "789",
+      "name": "Product 3",
+      "price": 300,
+      "category": "Games",
+      "id": "449f"
+    },
+    {
+      "id": "1735",
+      "sku": "1234",
+      "name": "Pedro Venchiarutti",
+      "category": "gamer",
+      "price": "123"
+    }
+  ]
+}

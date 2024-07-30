@@ -1,3 +1,6 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": [
+    "@smooke09/eslint-config/next", 
+    "next/core-web-vitals"
+  ]
 }
