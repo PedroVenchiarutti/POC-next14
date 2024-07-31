@@ -3,16 +3,55 @@
 import * as React from 'react'
 import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { Cross2Icon } from '@radix-ui/react-icons'
-
 import { cn } from '@/lib/utils'
+import { useSearchParams, usePathname, useRouter } from 'next/navigation'
 
-const Dialog = DialogPrimitive.Root
+type DialogProps = {
+  modalName: string
+}
 
-const DialogTrigger = DialogPrimitive.Trigger
+const DialogRoot = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Root> & DialogProps
+>(({ modalName, ...props }, ref) => {
+  const searchParams = useSearchParams()
+  const open = searchParams.get(modalName) === 'true'
+
+  return <DialogPrimitive.Root open={open} {...props} />
+})
+
+DialogRoot.displayName = DialogPrimitive.Root.displayName
+
+const DialogTrigger = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger> & {
+    modalName: string
+  }
+>(({ modalName, ...props }, ref) => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const handleClick = () => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString())
+    if (nextSearchParams.get(modalName) === 'true') {
+      nextSearchParams.delete(modalName)
+    } else {
+      nextSearchParams.set(modalName, 'true')
+    }
+    router.replace(`${pathname}?${nextSearchParams}`)
+  }
+
+  return (
+    <DialogPrimitive.Trigger ref={ref} {...props} onClick={handleClick}>
+      {props.children}
+    </DialogPrimitive.Trigger>
+  )
+})
+
+DialogTrigger.displayName = DialogPrimitive.Trigger.displayName
 
 const DialogPortal = DialogPrimitive.Portal
-
-const DialogClose = DialogPrimitive.Close
 
 const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
@@ -29,10 +68,33 @@ const DialogOverlay = React.forwardRef<
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
+const DialogClose = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Close>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close> & {
+    modalName: string
+  }
+>(({ modalName, ...props }, ref) => {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const handleClick = () => {
+    const nextSearchParams = new URLSearchParams(searchParams.toString())
+    nextSearchParams.delete(modalName)
+    router.replace(`${pathname}?${nextSearchParams}`)
+  }
+
+  return <DialogPrimitive.Close ref={ref} {...props} onClick={handleClick} />
+})
+
+DialogClose.displayName = DialogPrimitive.Close.displayName
+
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    modalName: string
+  }
+>(({ modalName, className, children, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
@@ -44,10 +106,13 @@ const DialogContent = React.forwardRef<
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+      <DialogClose
+        modalName={modalName}
+        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      >
         <Cross2Icon className="h-4 w-4" />
         <span className="sr-only">Close</span>
-      </DialogPrimitive.Close>
+      </DialogClose>
     </DialogPrimitive.Content>
   </DialogPortal>
 ))
@@ -109,7 +174,7 @@ const DialogDescription = React.forwardRef<
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
 export {
-  Dialog,
+  DialogRoot as Dialog,
   DialogPortal,
   DialogOverlay,
   DialogTrigger,

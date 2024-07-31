@@ -2,6 +2,7 @@
 import { InputWithLabel } from '@/components/Input'
 import { revalidateTag } from 'next/cache'
 import { AddProductButton } from './button'
+import { redirect } from 'next/navigation'
 
 export async function createProduct(formData: FormData) {
   if (
@@ -31,6 +32,7 @@ export async function createProduct(formData: FormData) {
   })
 
   revalidateTag('get-products')
+  redirect('/')
 }
 
 export async function FormCreateProduct({ action }: { action: any }) {

@@ -9,9 +9,14 @@ import {
 
 export function ModalCreateProduct({ action }: { action: any }) {
   return (
-    <Dialog>
-      <DialogTrigger>Adicionar Produto</DialogTrigger>
-      <DialogContent>
+    <Dialog modalName="create-product">
+      <DialogTrigger
+        className="bg-orange-500 text-white px-4 py-2 rounded-md font-medium"
+        modalName="create-product"
+      >
+        Adicionar Produto
+      </DialogTrigger>
+      <DialogContent modalName="create-product">
         <DialogHeader>
           <DialogTitle>Adicionar produto</DialogTitle>
         </DialogHeader>

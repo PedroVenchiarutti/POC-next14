@@ -4,6 +4,7 @@ import { twMerge } from 'tailwind-merge'
 
 export function AddProductButton() {
   const { pending } = useFormStatus()
+
   return (
     <button
       type="submit"
