@@ -1,6 +1,7 @@
 'use server'
-
+import { InputWithLabel } from '@/components/Input'
 import { revalidateTag } from 'next/cache'
+import { AddProductButton } from './button'
 
 export async function createProduct(formData: FormData) {
   if (
@@ -30,4 +31,20 @@ export async function createProduct(formData: FormData) {
   })
 
   revalidateTag('get-products')
+}
+
+export async function FormCreateProduct({ action }: { action: any }) {
+  return (
+    <form
+      action={action}
+      method="POST"
+      className="flex flex-col h-full w-ful mt-4 gap-4"
+    >
+      <InputWithLabel label="SKU" name="sku" type="text" />
+      <InputWithLabel label="Nome" name="name" type="text" />
+      <InputWithLabel label="Categoria" name="category" type="text" />
+      <InputWithLabel label="Preço" name="price" type="number" />
+      <AddProductButton />
+    </form>
+  )
 }
